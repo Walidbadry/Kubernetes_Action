@@ -1,0 +1,37 @@
+minikube ssh
+pwd
+docker login ..............................>>git command from aws ecr service
+
+cat .docker/config.jason
+exit
+scp -i $(minikube ssh-key) docker@$(minikube ip):.docker/config.jason .docker/config.jason
+
+cat .docker/config.jason | base64  >>copy it and move to secret file
+
+kubctl apply -f secret.yaml
+kubctl apply -f app.yaml
+
+>>>>
+or use this command
+
+kubectl create secret generic my-docker-secret \
+  --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+  --type=kubernetes.io/dockerconfigjson
+
+>>>>>>
+>>>>
+or use this command
+
+kubectl create secret docker-registry <secret-name> \
+  --docker-username=<your-username> \
+  --docker-password=<your-password> \
+  --docker-email=<your-email> \
+  --docker-server=<registry-server>
+
+>>>>
+
+
+
+
+
+

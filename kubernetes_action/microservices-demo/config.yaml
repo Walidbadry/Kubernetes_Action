@@ -1,0 +1,528 @@
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: emailservice
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: emailservice  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: emailservice  # Label that matches the selector
+    spec:
+      containers:
+      - name: service
+        : grc.io/google-samples/microservices-demo/emailservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 8080  # Expose the port where the app is running
+        env:
+        - name: PORT
+          value: "8080"
+        livenessProbe: #chick if contuner worck or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:8080"] 
+
+        readinessProbe: #chick if contuner running or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:8080"] 
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emailservice
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: emailservice  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 5000 # Port exposed by the service
+    targetPort: 8080  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: recommendationservice
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: recommendationservice  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: recommendationservice  # Label that matches the selector
+    spec:
+      containers:
+      - name: recommendation
+        image: grc.io/google-samples/microservices-demo/recommendationservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 8080  # Expose the port where the app is running
+        livenessProbe: #chick if contuner worck or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:8080"] 
+
+        readinessProbe: #chick if contuner running or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:8080"]         
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "8080"
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "productcatalogservice:3550"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: recommendationservice
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: recommendationservice  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 8080 # Port exposed by the service
+    targetPort: 8080  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: productcatalogservice
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: productcatalogservice  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app:   # Label that matches the selector
+    spec:
+      containers:
+      - name: productcatalogservice
+        image: grc.io/google-samples/microservices-demo/productcatalogservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 3550  # Expose the port where the app is running
+        livenessProbe: #chick if contuner worck or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:3550"] 
+
+        readinessProbe: #chick if contuner running or not
+           periodSecond: 5
+           exec:
+            command: ["/bin/grpc_health_probe","-addr=:3550"] 
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "3550"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productcatalogservice
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: productcatalogservice   # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 3550 # Port exposed by the service
+    targetPort: 3550   # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: V1
+kind: Deployment
+metadata:
+  name: paymentservice	
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: paymentservice	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: paymentservice	  # Label that matches the selector
+    spec:
+      containers:
+      - name: paymentservice
+        image: grc.io/google-samples/microservices-demo/paymentservice:v0.2.3  # Replace with your container image
+        ports:
+        - containerPort: 50051  # Expose the port where the app is running
+        env:
+        - name: port  # Define environment variables if needed
+          value: "50051"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: paymentservice		
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: paymentservice	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 50051 # Port exposed by the service
+    targetPort: 50051  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: currencyservice
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: currencyservice  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: currencyservice  # Label that matches the selector
+    spec:
+      containers:
+      - name: currencyservice
+        image: grc.io/google-samples/microservices-demo/currencyservice:v0.2.3  # Replace with your container image
+        ports:
+        - containerPort: 7000  # Expose the port where the app is running
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "7000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: currencyservice
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: currencyservice  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 7000 # Port exposed by the service
+    targetPort: 7000  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: shippingservice	
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: shippingservice	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: shippingservice	  # Label that matches the selector
+    spec:
+      containers:
+      - name: shippingservice	
+        image: grc.io/google-samples/microservices-demo/shippingservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 50051  # Expose the port where the app is running
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "50051"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shippingservice	
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: shippingservice	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 50051 # Port exposed by the service
+    targetPort: 50051  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: adservice		
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: adservice	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: adservice	  # Label that matches the selector
+    spec:
+      containers:
+      - name: adservice	
+        image: grc.io/google-samples/microservices-demo/adservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 9555  # Expose the port where the app is running
+        resources:   
+          requests:
+           cpu: 200m
+           memory: 180Mi
+        limits:
+           cpu: 40000m
+           memory: 200Mi
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data        
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "9555"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adservice	
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: adservice	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 9555 # Port exposed by the service
+    targetPort: 9555  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: cartservice	
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: cartservice	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: cartservice	  # Label that matches the selector
+    spec:
+      containers:
+      - name: cartservice	
+        image: grc.io/google-samples/microservices-demo/cartservice:v0.2.3  # Replace with your container image
+        ports:
+        - containerPort: xxx  # Expose the port where the app is running
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "7070"
+        - name: REDIS_ADDR  # Define environment variables if needed
+          value: "redis_cart:6379"          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cartservice	
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: cartservice	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 7070 # Port exposed by the service
+    targetPort: 7070  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: redis_cart
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: redis_cart  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: redis_cart  # Label that matches the selector
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine # Replace with your container image
+        ports:
+        - containerPort:   # Expose the port where the app is running
+       volumes:
+       - name: redis-data
+        emptyDir: {}
+
+        readinessProbe: #chick if contuner running or not
+          initialDeploySeconfs: 5 #whait 5 second befor do start
+          periodSecond: 5
+          tcpSocket:
+           port: 6379
+        livenessProbe: #chick if contuner worck or not
+          initialDeploySeconfs: 5 #whait 5 second befor do start
+          periodSecond: 5
+          tcpSocket:
+           port: 6379
+        resources:   
+          requests:
+           cpu: 70m
+           memory: 200Mi
+        limits:
+           cpu: 200m
+           memory: 300Mi
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+---  
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis_cart
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: redis_cart  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 6379 # Port exposed by the service
+    targetPort: 6379  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: checkoutservice	
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: checkoutservice	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: checkoutservice	  # Label that matches the selector
+    spec:
+      containers:
+      - name: checkoutservice	
+        image: grc.io/google-samples/microservices-demo/checkoutservice:v0.2.3 # Replace with your container image
+        ports:
+        - containerPort: 5050  # Expose the port where the app is running
+        env:
+        - name: PORT  # Define environment variables if needed
+          value: "5050"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: PAYMENT_SERVICE_ADDR
+            value: "paymentservice:50051"
+          - name: EMAIL_SERVICE_ADDR
+            value: "emailservice:5000"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "cartservice:7070"
+apiVersion: v1
+kind: Service
+metadata:
+  name: checkoutservice	
+  namespace: default  # Optional: Specify the namespace
+spec:
+  selector:
+    app: checkoutservice	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 5050 # Port exposed by the service
+    targetPort: 5050  # Port the container listens on
+  # type: ClusterIP  # Service type: ClusterIP (default), NodePort, LoadBalancer, or ExternalName
+
+
+
+---
+apiVersion: v1
+kind: Deployment
+metadata:
+  name: frontend	
+  namespace: default # Optional: Specify the namespace
+spec:
+  replicas: 3  # Number of pod replicas
+  selector:
+    matchLabels:
+      app: frontend	  # Label to identify the pods
+  template:
+    metadata:
+      labels:
+        app: frontend	  # Label that matches the selector
+    spec:
+      containers:
+      - name: frontend	
+        image: grc.io/google-samples/microservices-demo/frontend:v0.2.3  # Replace with your container image
+        ports:
+        - containerPort: 8080  # Expose the port where the app is running
+        env:
+          - name: PORT  # Define environment variables if needed
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "productcatalogservice:3550"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "currencyservice:7000"
+          - name: CART_SERVICE_ADDR
+            value: "cartservice:7070"
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "recommendationservice:8080"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "shippingservice:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "checkoutservice:5050"
+          - name: AD_SERVICE_ADDR
+            value: "adservice:9555"
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: "shoppingassistantservice:80"      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend	
+  namespace: default  # Optional: Specify the namespace
+spec:
+  type: LoadBalancer
+  selector:
+    app: frontend	  # Match the label used in Deployment
+  ports:
+  - protocol: TCP
+    port: 8080 # Port exposed by the service
+    targetPort: 8080  # Port the container listens on

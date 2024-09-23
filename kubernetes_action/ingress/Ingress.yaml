@@ -1,0 +1,34 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: demo-ingress
+  namespace: ingress-demo
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules: 
+    - http:
+        paths:
+          - path: /app1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1
+                port:
+                  number: 80
+          - path: /app2
+            pathType: Prefix
+            backend:
+              service:
+                name: app2
+                port:
+                  number: 80
+
+
+
+# kubectl apply -f namespace.yaml
+# kubectl apply -f app1-deployment.yaml
+# kubectl apply -f app2-deployment.yaml
+# kubectl apply -f app1-service.yaml
+# kubectl apply -f app2-service.yaml
+# kubectl apply -f ingress.yaml

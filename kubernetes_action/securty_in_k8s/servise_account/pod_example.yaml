@@ -1,0 +1,13 @@
+# pod_deploy.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  namespace: default
+spec:
+  serviceAccountName: my-service-account  # Use the service account
+  containers:
+  - name: my-container
+    image: nginx
+#specify that your Pod will use the Service Account you created by
+  # referencing it in your Pod definition.

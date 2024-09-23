@@ -1,0 +1,43 @@
+# MongoDB Replica Set configuration
+replicaSet:
+  enabled: true
+  name: rs0
+  replicas: 3
+  pdb:
+    create: true
+
+# MongoDB Authentication parameters
+auth:
+  enabled: true
+  rootPassword: "rootpassword"
+  username: "myuser"
+  password: "mypassword"
+  database: "mydatabase"
+  replicaSetKey: "replicasetkey"
+
+# MongoDB Arbiter
+arbiter:
+  enabled: false
+
+# Service type
+service:
+  type: ClusterIP
+  port: 27017
+
+# Persistence settings
+persistence:
+  enabled: true
+  size: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  storageClass: "standard"
+  # storageClass: "linode-block-storage"
+
+# MongoDB resources
+resources:
+  limits:
+    memory: 512Mi
+    cpu: 500m
+  requests:
+    memory: 256Mi
+    cpu: 250m

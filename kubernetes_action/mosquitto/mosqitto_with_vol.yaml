@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosquitto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      containers:
+      - name: mosquitto
+        image: eclipse-mosquitto
+        ports:
+        - containerPort: 1883  # MQTT port
+        volumeMounts:
+        - name: config-volume
+          mountPath: /mosquitto/config
+          # subPath: mosquitto.conf
+
+        - name: secret-volume
+          mountPath: /mosquitto/secret
+          # subPath: mosquitto.conf
+
+        # - name: data-volume
+        #   mountPath: /mosquitto/data
+        # - name: log-volume
+        #   mountPath: /mosquitto/log
+      volumes:
+      - name: config-volume
+        configMap:
+          name: mosquitto-config
+      - name: secret-volume
+        secret:
+          name: mosquitto-secret
+
+
+      # - name: data-volume
+      #   persistentVolumeClaim:
+      #     claimName: mosquitto-pvc
+      # - name: log-volume
+      #   persistentVolumeClaim:
+      #     claimName: mosquitto-pvc

@@ -1,0 +1,40 @@
+helm install prometheus stable/prometheus-operator
+kubctl get all
+    kubctl get statfullsel
+    kubctl describe ........... > prom.yaml
+kubctl logs prometheus-grafana... -c grafana >>get port and username
+
+kubctl port-forward deploymint/prometheus-grafana 3000
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
